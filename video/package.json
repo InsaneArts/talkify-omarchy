@@ -7,7 +7,8 @@
     "still": "remotion still src/index.ts Film",
     "render": "remotion render src/index.ts Film out/talkify-omarchy.mp4 --codec h264 --crf 12 --pixel-format yuv420p --audio-codec aac --audio-bitrate 320k",
     "shots": "scripts/shots.sh",
-    "readme": "scripts/readme.sh"
+    "readme": "scripts/readme.sh",
+    "clips": "scripts/clips.sh"
   },
   "dependencies": {
     "@remotion/cli": "4.0.534",

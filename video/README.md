@@ -9,6 +9,7 @@ npm run studio   # scrub it in the browser
 npm run render   # out/talkify-omarchy.mp4
 npm run shots    # stills of each feature, into ../.github/assets
 npm run readme   # the README's hero and pictures, and GitHub's social preview
+npm run clips    # 3–5 second clips for posts, into out/x
 ```
 
 The film runs at 100 BPM: a bar is 144 frames and scenes cut on bars
