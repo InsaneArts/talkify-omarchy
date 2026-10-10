@@ -3,115 +3,31 @@
 <h3 align="center">Fast, beautiful and private voice dictation</h3>
 
 <p align="center">
-  <img src=".github/assets/film-demo.webp" width="100%" alt="A dictation on an Omarchy desktop: the Talkify pill rises at the bottom, the words land in a coding agent's input box while they are spoken, 'send it' presses Enter and the agent starts working" />
+  <img src=".github/assets/cover.jpg" width="100%" alt="Talkify for Omarchy: the ghost with sparkles above the name, and the Talkify pill on five Omarchy desktops, each in another theme" />
 </p>
 
-<p align="center">
-  <a href="https://github.com/InsaneArts/talkify-omarchy/raw/main/.github/assets/talkify-omarchy.mp4"><b>Download the 45-second film</b></a> (MP4, 8 MB)
-</p>
+Hold Right Super, say what you want to write, and let go. The words land in the window you were typing in: a terminal, a browser, an editor, a chat.
 
-Talkify is dictation for [Omarchy](https://omarchy.org). Hold Right Super, say what you want to write, let go, and the words are pasted into the window you were typing in: a terminal, a browser, an editor, a chat. Speech recognition runs on your machine with NVIDIA's Parakeet model. There is no cloud, no account, and nothing you say leaves the computer.
+Talkify started on the Mac, as [Talkify for macOS](https://github.com/tornikegomareli/Talkify) ([usetalkify.app](https://usetalkify.app)). This is the same idea rebuilt for [Omarchy](https://omarchy.org), with the same HUD and the same ghost, at home in the Omarchy bar and in whatever theme you run.
 
-It is the Linux sibling of [Talkify for macOS](https://github.com/tornikegomareli/Talkify) ([usetalkify.app](https://usetalkify.app)), rebuilt for Hyprland and the Omarchy bar with the same HUD, the same ghost and the same rules.
-
-## Hold, speak, let go
-
-Hold Right Super and talk; let go and the text goes in. Tap the key instead to keep listening hands-free, and tap again to finish. Escape cancels.
-
-Your shortcuts keep working. Super+C, Super+Return and every other chord that starts with Right Super still do what they did: Talkify tells a shortcut from dictation by what you press next. The microphone opens the moment the key goes down, so the first word is never lost. A mouse side button can be the trigger too.
-
-The text is pasted into the window the session started in. Your clipboard is put back afterwards and kept out of the clipboard history. If you switched windows while talking, the text waits on the clipboard instead of landing in the wrong place. Music and videos that are playing pause while you talk and resume after.
-
-On an Intel Core i5-13600KF, an 11-second sentence is transcribed in about 0.3 seconds, on the CPU alone. Parakeet understands 25 European languages and detects which one you speak.
-
-## Words land while you speak
-
-In a hands-free session, Talkify can paste a phrase at a time as you pause, so a long dictation is already in the window by the time you finish. It only cuts where you stopped speaking, so no word is ever split between two pastes.
-
-<p align="center">
-  <img src=".github/assets/film-live.png" width="100%" alt="Close-up: the first phrase has landed in the agent's input box, highlighted, while the pill below is still hearing the rest of the sentence" />
-</p>
-
-## It writes what you meant
-
-The Tidy pass cleans up what the Speech Model heard, and never writes a word you did not say:
-
-- "um", "uh" and stutters go;
-- "comma", "period", "question mark" and "new line" become the marks, when you pause around them;
-- "scratch that" removes the phrase before it.
-
-The HUD shows all of it before the text lands. Fillers fade, a scratched phrase is struck through, and spoken punctuation is underlined until it turns into the mark.
-
-<p align="center">
-  <img src=".github/assets/film-tidy.png" width="100%" alt="The pill shows 'Um, the demo is on Friday, scratch that, Thursday at noon period' with 'Um' faint, 'on Friday, scratch that' struck through and 'period' underlined. Below it: lands as 'The demo is Thursday at noon.'" />
-</p>
-
-## It learns your words
-
-`~/.config/talkify/words.txt` holds the words Talkify should spell your way, one per line, in three forms:
-
-```text
-Hyprland                    a word to prefer
-omachi -> Omarchy           a correction
-sign off => Best, Ghost     a snippet: say the left, get the right
-```
-
-Words are matched by how they sound as well as how they are spelled, so a name the model has never heard still comes out right. When it gets a word wrong, fix it in place, select your correction and run `talkify teach`: Talkify finds what it heard and learns the pair. The ghost in the bar nods when it does.
-
-<p align="center">
-  <img src=".github/assets/film-vocabulary.png" width="100%" alt="Osaka Jade theme: words.txt open in neovim on the left, notes on the right where 'I moved my dotfiles to Omarchy' has just landed. The pill still shows the word as heard, 'omachi', in the accent colour." />
-</p>
-
-## Talk to your terminal
-
-App rules change what happens per app, by window class. Every terminal starts with a rule of its own: the closing period is dropped, and "send it" said last presses Enter. "Run the tests and fix what fails, send it" goes straight to your coding agent.
-
-<p align="center">
-  <img src=".github/assets/film-hero.png" width="100%" alt="An Omarchy desktop in Tokyo Night: a coding agent in the terminal and neovim beside it. The words have landed in the agent's input box, and the pill shows them with 'send it' turned into a ⏎ key." />
-</p>
-
-A rule can turn the Tidy pass off, drop the closing period, write in lower case, add a trailing space, and press Enter never, on "send it", or always. Rules are set in Settings → App rules, which lists the apps you dictated into recently.
-
-## A HUD where you want it
-
-The HUD shows that Talkify is listening, what it heard, and what it is about to do. Put it in one of six places:
-
-- **Pill**: a small capsule at the bottom centre, the one most dictation apps settled on;
-- **Window caption**: pinned to the window the text is going into, so you always know where it will land;
-- **Halo**: a glow around that window, covering nothing;
-- **Bar island**: the ghost in the bar widens into a pill inside the bar itself;
-- **Pointer**: a mark by the mouse pointer;
-- **Notch**: a shape that hangs from the top edge of the screen.
-
-<p align="center">
-  <img src=".github/assets/film-placements.png" width="100%" alt="Six views of the same desktop, one per HUD placement: pill, window caption, halo, bar island, pointer and notch" />
-</p>
-
-Words can always show, always hide, or follow the placement. The voice is drawn as a waveform (Chart Line, Capsules, Silver, Dots, Curve or Filled), an Edge Glow, a glow with the draft, or a compact dot. The HUD reveals with a slide, an unfurl, a bloom or a drift. Silence and a dead microphone look different: when the microphone sends nothing but silence, the HUD and the ghost turn amber and the HUD asks whether it is muted.
-
-## In your theme's colours
-
-The HUD, the voice, the glow, the ghost and the settings take their colours from your Omarchy theme, and follow it the moment you switch with `omarchy-theme-set`. Prefer Talkify's own blue and violet? That is one setting.
-
-<p align="center">
-  <img src=".github/assets/film-themes.png" width="100%" alt="One desktop cut into four slices, each in a different Omarchy theme: Tokyo Night, Catppuccin, Gruvbox and Osaka Jade" />
-</p>
-
-## Never lose a dictation
-
-The last 20 dictations stay in Settings → Recent. Paste one again, paste the original before the Tidy pass, or Retry: Talkify decodes the recording again, which helps when a noise spoiled the first pass. From a key or a script, `talkify paste-last` and `talkify retry` do the same.
-
-## Insights
-
-How much you dictate, how fast, and how much typing it saved: words this week, your pace in words per minute, voice time, your streak, and a 16-week heatmap in your theme's colours. The ghost in the bar celebrates each milestone the first time you reach it.
-
-<p align="center">
-  <img src=".github/assets/settings-insights.png" width="80%" alt="The Insights page: streak, words today, time saved, a 16-week activity heatmap in the theme's colours, and the milestones reached" />
-</p>
-
-Only daily totals are kept, never the text, and Insights can be turned off on the same page.
+Speech is recognised on your machine by NVIDIA's [Parakeet TDT 0.6B v3](https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3): about 0.3 seconds for an 11-second sentence on the CPU, in 25 European languages. No cloud, no account, nothing leaves your computer.
 
 ## Install
+
+In one line:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/InsaneArts/talkify-omarchy/main/install.sh | bash
+```
+
+With Omarchy's package manager, from the AUR:
+
+```sh
+omarchy pkg aur add talkify-omarchy
+talkify-setup
+```
+
+From source:
 
 ```sh
 git clone https://github.com/InsaneArts/talkify-omarchy.git
@@ -119,102 +35,81 @@ cd talkify-omarchy
 ./install.sh
 ```
 
-`install.sh` builds Talkify, installs it to `~/.local/bin`, copies the shell plugin into `~/.config/omarchy/plugins`, starts `talkify.service`, and puts the ghost in the bar. The first start downloads the Speech Model (670 MB); the ghost fills up like a battery while it does.
+The one-line install and `install.sh` build Talkify from source into `~/.local`, installing Rust first if it is missing. The package installs it for the whole system, and `talkify-setup` puts it in your bar. Either way, the first start downloads the Speech Model (670 MB) while the ghost in the bar fills up.
 
-Requirements:
-
-- Omarchy 4 with the Quickshell bar (Hyprland 0.56 or newer)
-- Rust 1.88 or newer to build it (`sudo pacman -S rust`)
-- 1 GB of disk for the Speech Model
-
-Holding the key needs Talkify to read the keyboard, which on Arch means the `input` group:
+Holding the key needs Talkify to read the keyboard, which means the `input` group:
 
 ```sh
 sudo usermod -aG input "$USER"   # then log out and back in
 ```
 
-Until then, or if you would rather not, bind a tap of the key in `~/.config/hypr/bindings.lua` and tap to start and stop:
+Until then, tap the key instead of holding it, with this bind in `~/.config/hypr/bindings.lua`:
 
 ```lua
 o.bind("SUPER + Super_R", "Dictation (Talkify)", "talkify tap", { release = true })
 ```
 
-The bind is harmless once Talkify can read the keyboard. A mouse side button works the same way: with the `input` group pick it in Settings → Trigger; without it, bind its press and release (275 is the back button):
+Talkify needs Omarchy 4 with Hyprland 0.56 or newer.
 
-```lua
-o.bind("mouse:275", "Dictation (Talkify)", "talkify press")
-o.bind("mouse:275", "Dictation (Talkify)", "talkify release", { release = true })
-```
+## Appearance
 
-To update:
+The HUD sits where you want it: a pill at the bottom, a caption on the window you are dictating into, a halo around it, an island in the bar, a mark by the pointer, or a notch from the top edge. It takes its colours from your Omarchy theme and changes the moment you switch.
 
-```sh
-git pull && ./install.sh
-```
+<p align="center">
+  <img src=".github/assets/feature-appearance.jpg" width="100%" alt="Six views of an Omarchy desktop, each in another theme, one per HUD placement: pill, window, halo, island, pointer and notch" />
+</p>
 
-## Remove
+## Vocabulary
 
-```sh
-systemctl --user disable --now talkify.service
-rm ~/.config/systemd/user/talkify.service ~/.local/bin/talkify
-omarchy plugin remove tornikegomareli.talkify
-```
+Teach Talkify the names and words you use. When it gets one wrong, fix it, select your fix and run `talkify teach`, and from then on it writes it your way. Words match by how they sound as well as how they are spelled, and a short phrase can expand into a whole snippet.
 
-Your settings, vocabulary and history stay in `~/.config/talkify`, and the Speech Model, sounds and Insights in `~/.local/share/talkify`. Delete both to remove everything. If you added the binds above, delete them from `~/.config/hypr/bindings.lua`.
+<p align="center">
+  <img src=".github/assets/feature-vocabulary.jpg" width="100%" alt="The Vocabulary page in Gruvbox beside the pill, where the misheard 'omachi' is struck through and replaced with 'Omarchy'" />
+</p>
+
+## Insights
+
+How much you dictate, how fast, and how much typing it saved, with a sixteen-week heatmap in your theme's colours. The ghost celebrates each milestone. Only daily totals are kept, never the text.
+
+<p align="center">
+  <img src=".github/assets/feature-insights.jpg" width="100%" alt="The Insights page in Ristretto, with a coral heatmap, beside the ghost celebrating 10,000 words among sparkles" />
+</p>
+
+## App rules
+
+Each app can have its own rules: whether to tidy the text, end with a period, write in lower case, or press Enter. Terminals come with one already, so saying "send it" at the end submits your prompt to a coding agent.
+
+<p align="center">
+  <img src=".github/assets/feature-app-rules.jpg" width="100%" alt="The App rules page in a light Rosé Pine theme beside the pill, where 'Run the tests and fix what fails' ends in a pressed Enter key" />
+</p>
 
 ## Using it
 
-- Hold Right Super to talk, let go to insert. Tap it for a hands-free session; tap again to finish. Escape cancels.
-- Click the ghost in the bar for settings. Right-click it to start or finish a session.
-- Say "send it" last in a terminal to press Enter.
+- Hold Right Super to talk, let go to insert. Tap it for hands-free, tap again to finish. Escape cancels.
+- Click the ghost in the bar for settings, right-click it to start or finish a session.
+- `talkify paste-last` pastes your last dictation again, `talkify retry` decodes it again, and `talkify status` shows what Talkify is doing.
 
-| Command | |
-|---|---|
-| `talkify status` | what Talkify is doing |
-| `talkify toggle` | start a hands-free session, or finish the one in flight |
-| `talkify cancel` | cancel the session in flight |
-| `talkify pause` | pause or resume a hands-free session |
-| `talkify paste-last [N] [--raw]` | paste a recent dictation again |
-| `talkify retry [N]` | decode a recent dictation again and paste it |
-| `talkify teach` | learn the selected correction |
-| `talkify vocab add 'omachi -> Omarchy'` | add to the vocabulary |
-| `talkify set hud.placement window` | change a setting |
-| `talkify transcribe file.wav` | transcribe a file, no daemon needed |
-| `omarchy-shell tornikegomareli.talkify open` | open the settings |
+To update, run the install again: the one-line install, `git pull && ./install.sh`, or your AUR helper for the package.
 
-Bind any of them to a key the same way as the trigger. Logs: `journalctl --user -u talkify -f`.
-
-## Settings
-
-Click the ghost in the bar. The settings are organised into Recent, Dictation, Trigger, Appearance, Vocabulary, App rules, Sounds, Insights and Speech Model. Appearance plays a live preview of every HUD placement in your theme, so you can see each one before you pick it.
-
-<p align="center">
-  <img src=".github/assets/settings-appearance.png" width="100%" alt="The Appearance page: six live previews of the HUD placements, a larger preview of the chosen one, and the words, colours, voice visual and waveform pickers" />
-</p>
-
-Changes apply at once and are saved to `~/.config/talkify/config.toml`. Every setting can also be set from a script:
+To remove Talkify:
 
 ```sh
-talkify set hud.placement halo
-talkify set sounds.volume 0.4
+systemctl --user disable --now talkify.service
+omarchy plugin remove tornikegomareli.talkify
+rm -f ~/.local/bin/talkify ~/.config/systemd/user/talkify.service   # after install.sh
+omarchy pkg drop talkify-omarchy                                     # after the package
+rm -rf ~/.config/talkify ~/.local/share/talkify                      # settings, history, the model
 ```
-
-## Talkify for macOS
-
-Talkify started on the Mac. [Talkify for macOS](https://github.com/tornikegomareli/Talkify) is free and open source too, with on-device transcription on Apple Silicon and the same hold-speak-release flow. Get it at [usetalkify.app](https://usetalkify.app).
 
 ## Development
 
 ```sh
-cargo test                    # the pure rules in crates/talkify-core
-quickshell -p plugin/dev      # the HUD, playing scripted sessions
-quickshell -p plugin/dev/tests.qml
-python3 tests/e2e.py          # a second daemon, real speech, every feature
+cargo test                       # the pure rules in crates/talkify-core
+python3 tests/e2e.py             # a second daemon, real speech, every feature
+quickshell -p plugin/dev         # the HUD, playing scripted sessions
 ```
 
-The end-to-end tests run beside your Talkify without touching it: their daemon has its own socket, config and data, inserts nothing, and listens to a PipeWire null sink that synthesized speech is played into.
-
-The daemon's protocol is in [docs/protocol.md](docs/protocol.md), the domain language in [CONTEXT.md](CONTEXT.md), and the research behind the HUD and the features in [docs/research](docs/research). The film and these pictures are code too, in [video](video).
+The domain language is in [CONTEXT.md](CONTEXT.md) and the daemon's protocol in [docs/protocol.md](docs/protocol.md). The pictures here and the product film are code too, in [video](video).
 
 ## License
 
