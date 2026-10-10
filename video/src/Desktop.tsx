@@ -103,17 +103,18 @@ export const blendTheme = (a: OmarchyTheme, b: OmarchyTheme, t: number): Omarchy
   return out as unknown as OmarchyTheme;
 };
 
-const Wallpaper: React.FC<{ theme: OmarchyTheme; frame: number }> = ({ theme, frame }) => {
+const Wallpaper: React.FC<{ theme: OmarchyTheme; frame: number; vivid?: number }> = ({ theme, frame, vivid = 0 }) => {
   const [one, two, three] = theme.wall;
+  const k = mix(1, 1.45, vivid);
   const drift = Math.sin(frame / 200) * 30;
   return (
     <div
       style={{
         position: "absolute",
         inset: 0,
-        background: `radial-gradient(900px 640px at ${12 + drift / 40}% 8%, ${tint(one, 0.62)}, transparent 70%),
-          radial-gradient(1000px 760px at 96% ${92 - drift / 40}%, ${tint(two, 0.55)}, transparent 70%),
-          radial-gradient(700px 520px at 64% 40%, ${tint(three, 0.32)}, transparent 72%),
+        background: `radial-gradient(900px 640px at ${12 + drift / 40}% 8%, ${tint(one, 0.62 * k)}, transparent 70%),
+          radial-gradient(1000px 760px at 96% ${92 - drift / 40}%, ${tint(two, 0.55 * k)}, transparent 70%),
+          radial-gradient(700px 520px at 64% 40%, ${tint(three, 0.32 * k)}, transparent 72%),
           linear-gradient(160deg, ${theme.dark_background}, ${theme.background})`,
       }}
     />
@@ -753,7 +754,9 @@ export const Desktop: React.FC<{
   /** What the windows show, when not the agent and neovim. */
   left?: (theme: OmarchyTheme) => React.ReactNode;
   right?: (theme: OmarchyTheme) => React.ReactNode;
-}> = ({ frame, theme, hud, terminal, recording, pointer = { x: 1130, y: 470 }, left, right }) => {
+  /** 0–1: the windows fade away and the wallpaper brightens, leaving the bar. */
+  bare?: number;
+}> = ({ frame, theme, hud, terminal, recording, pointer = { x: 1130, y: 470 }, left, right, bare = 0 }) => {
   const island = hud.placement === "island" ? hud.reveal : 0;
   const level = hud.level(frame);
   return (
@@ -767,7 +770,7 @@ export const Desktop: React.FC<{
         background: theme.dark_background,
       }}
     >
-      <Wallpaper theme={theme} frame={frame} />
+      <Wallpaper theme={theme} frame={frame} vivid={bare} />
 
       <div
         style={{
@@ -807,12 +810,16 @@ export const Desktop: React.FC<{
 
       {island > 0.02 && <Island theme={theme} reveal={island} level={hud.level} frame={frame} />}
 
-      <Frosted rect={WINDOWS.left} theme={theme} active>
-        {left ? left(theme) : <Terminal theme={theme} state={terminal} frame={frame} />}
-      </Frosted>
-      <Frosted rect={WINDOWS.right} theme={theme} active={false}>
-        {right ? right(theme) : <Neovim theme={theme} />}
-      </Frosted>
+      {bare < 1 && (
+        <div style={{ position: "absolute", inset: 0, opacity: 1 - bare, transform: `scale(${mix(1, 0.97, bare)})` }}>
+          <Frosted rect={WINDOWS.left} theme={theme} active>
+            {left ? left(theme) : <Terminal theme={theme} state={terminal} frame={frame} />}
+          </Frosted>
+          <Frosted rect={WINDOWS.right} theme={theme} active={false}>
+            {right ? right(theme) : <Neovim theme={theme} />}
+          </Frosted>
+        </div>
+      )}
 
       {hud.placement === "halo" && hud.reveal > 0 && (
         <Halo theme={theme} rect={WINDOWS.left} reveal={hud.reveal} level={level} frame={frame} s={(hud.scale ?? 1.5) / 1.5} />
