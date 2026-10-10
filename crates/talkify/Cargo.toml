@@ -1,0 +1,23 @@
+[package]
+name = "talkify"
+description = "Talkify for Omarchy: hold Right Super, speak, release"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+talkify-core = { path = "../talkify-core" }
+anyhow = "1"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+cpal = "0.18"
+crossbeam-channel = "0.5"
+evdev = "0.13"
+hound = "3.5"
+parakeet-rs = "=0.3.8"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+signal-hook = "0.4"
+tracing = "0.1"
+zbus = { version = "5", default-features = false, features = ["blocking-api", "async-io"] }
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+wl-clipboard-rs = "0.9"
