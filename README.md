@@ -1,6 +1,6 @@
 <h1 align="center">Talkify for Omarchy</h1>
 
-<h3 align="center">Hold a key. Speak. It lands where you type.</h3>
+<h3 align="center">Fast, beautiful and private voice dictation</h3>
 
 <p align="center">
   <img src=".github/assets/film-demo.webp" width="100%" alt="A dictation on an Omarchy desktop: the Talkify pill rises at the bottom, the words land in a coding agent's input box while they are spoken, 'send it' presses Enter and the agent starts working" />
