@@ -5,6 +5,7 @@ pub mod apps;
 pub mod chord;
 pub mod chunk;
 pub mod config;
+pub mod insights;
 pub mod level;
 pub mod live;
 pub mod protocol;
