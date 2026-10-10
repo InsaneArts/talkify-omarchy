@@ -1,6 +1,6 @@
 # Talkify, now for Omarchy: the film
 
-A 30-second product film, 1920×1080 at 60 fps, built with Remotion. Every
+A 45-second product film, 1920×1080 at 60 fps, built with Remotion. Every
 frame is code, so it re-renders identically.
 
 ```sh
@@ -14,9 +14,11 @@ The film runs at 100 BPM: a bar is 144 frames and scenes cut on bars
 (`src/brand.ts`). Scenes live in `src/scenes/`, overlapping so every cut is a
 movement; `src/Film.tsx` places them and the sound cues.
 
-The soundtrack and the key, whoosh and glow effects are synthesised by
-`audio/compose.py` (numpy, scipy, soundfile) into `public/sounds/`; the
-Synth8 sounds are the app's own. Fonts are Inter Display, Inter and
+The soundtrack and the key, whoosh, glow, tick and sparkle effects are
+synthesised by `audio/compose.py` (numpy, scipy, soundfile) into
+`public/sounds/`, with a bell on every theme change; the Synth8 sounds are
+the app's own. The settings pages in `public/settings/` are real screenshots
+of the plugin, taken with `plugin/settings-dev` in a different theme each. Fonts are Inter Display, Inter and
 JetBrains Mono, all under the SIL Open Font License.
 
 Claims on screen are the ones the app backs: on-device Parakeet, 25

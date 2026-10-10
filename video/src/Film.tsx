@@ -7,9 +7,13 @@ import { Demo, T } from "./scenes/Demo";
 import { End, END_AT } from "./scenes/End";
 import { Intro } from "./scenes/Intro";
 import { Keycap, PRESS, RELEASE } from "./scenes/Keycap";
-import { COLLAPSE, Themes, THEMES_AT } from "./scenes/Themes";
+import { Fun } from "./scenes/Fun";
+import { HANDOFF, LEAVE, Places, STEPS } from "./scenes/Places";
+import { Settings } from "./scenes/Settings";
+import { ThemePill } from "./scenes/ThemePill";
+import { AT } from "./timeline";
 
-// Talkify, now for Omarchy: thirty seconds at 100 BPM. Scenes overlap so
+// Talkify, now for Omarchy: 45.6 seconds at 100 BPM. Scenes overlap so
 // every cut is a movement, never a jump.
 
 loadFonts();
@@ -47,9 +51,12 @@ export const Film: React.FC = () => {
       {frame >= 210 && frame < 545 && <Keycap frame={frame} />}
       {frame < 300 && <Intro frame={frame} />}
       {frame >= T.enter && frame < T.exit + 42 && <Demo frame={frame} />}
-      {frame >= CARDS_AT - 4 && frame < THEMES_AT + 20 && <Cards frame={frame} />}
-      {frame >= THEMES_AT - 10 && frame < COLLAPSE + 40 && <Themes frame={frame} />}
-      {frame >= END_AT - 4 && <End frame={frame} />}
+      {frame >= CARDS_AT - 4 && frame < AT.theme + 4 && <Cards frame={frame} />}
+      {frame >= AT.theme - 12 && frame < HANDOFF && <ThemePill frame={frame} />}
+      {frame >= HANDOFF && frame < LEAVE + 56 && <Places frame={frame} />}
+      {frame >= LEAVE && frame < AT.fun + 6 && <Settings frame={frame} />}
+      {frame >= AT.fun - 18 && frame < AT.end && <Fun frame={frame} />}
+      {frame >= END_AT && <End frame={frame} />}
       <Grain />
 
       <Cue at={0} name="music.wav" />
@@ -61,8 +68,15 @@ export const Film: React.FC = () => {
       <Cue at={T.chunkTwo} name="Synth8Paste.wav" volume={1} />
       <Cue at={T.enter_ + 6} name="Synth8End.wav" volume={0.32} />
       <Cue at={T.exit} name="whoosh.wav" volume={0.42} />
-      <Cue at={COLLAPSE} name="whoosh.wav" volume={0.5} />
-      <Cue at={END_AT} name="glow.wav" volume={0.8} />
+      <Cue at={AT.places - 16} name="whoosh.wav" volume={0.3} />
+      {STEPS.slice(1).map((step) => (
+        <Cue key={step.at} at={step.at} name="tick.wav" volume={0.7} />
+      ))}
+      <Cue at={LEAVE + 4} name="whoosh.wav" volume={0.45} />
+      <Cue at={AT.settings + 72} name="tick.wav" volume={0.7} />
+      <Cue at={AT.settings + 144} name="tick.wav" volume={0.7} />
+      <Cue at={AT.fun + 126} name="sparkle.wav" volume={0.8} />
+      <Cue at={END_AT - 6} name="glow.wav" volume={0.8} />
     </AbsoluteFill>
   );
 };
