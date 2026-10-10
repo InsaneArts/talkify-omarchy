@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+# Sets Talkify up for the user who runs it: puts the shell plugin where
+# Omarchy finds it, enables it in the bar, and starts the daemon's service.
+#
+#   talkify-setup               after installing the talkify-omarchy package:
+#                               links the plugin the package installed
+#   talkify-setup <plugin-dir>  what install.sh runs: copies that plugin
+#
+# A link follows the package through upgrades. A copy, because the shell's
+# plugin watcher does not follow a link, hot-reloads as install.sh replaces
+# it. Safe to run again.
+set -euo pipefail
+
+plugin_id="tornikegomareli.talkify"
+source="${1:-/usr/share/talkify/plugin}"
+plugins="${XDG_CONFIG_HOME:-$HOME/.config}/omarchy/plugins"
+config="${XDG_CONFIG_HOME:-$HOME/.config}"
+
+[[ -f "$source/manifest.json" ]] || { echo "talkify-setup: no plugin at $source" >&2; exit 1; }
+install -d "$plugins"
+target="$plugins/$plugin_id"
+
+changed=""
+if [[ $# -eq 0 ]]; then
+  if [[ "$(readlink "$target" 2>/dev/null)" != "$source" ]]; then
+    rm -rf "$target"
+    ln -s "$source" "$target"
+    changed=yes
+  fi
+  if [[ -f "$config/systemd/user/talkify.service" ]]; then
+    echo "talkify-setup: $config/systemd/user/talkify.service from install.sh overrides the package's service;" >&2
+    echo "  remove it to run the packaged daemon." >&2
+  fi
+else
+  echo "Copying the shell plugin into $plugins"
+  [[ -L "$target" ]] && rm "$target"
+  changed=$(rsync -a --delete --itemize-changes --exclude dev/ --exclude settings-dev/ "$source/" "$target/")
+fi
+
+echo "Starting talkify.service"
+systemctl --user daemon-reload
+systemctl --user enable talkify.service >/dev/null 2>&1
+systemctl --user restart talkify.service
+
+if command -v omarchy-shell >/dev/null; then
+  # The shell hot-reloads the HUD, but keeps the bar widget, the settings
+  # and the service it already loaded until it restarts.
+  if [[ -n "$changed" ]] && omarchy-shell shell ping >/dev/null 2>&1; then
+    echo "Restarting the Omarchy shell to load the plugin"
+    omarchy restart shell >/dev/null 2>&1 || true
+  fi
+  omarchy-shell shell rescanPlugins >/dev/null 2>&1 || true
+  if ! grep -q "\"$plugin_id\"" "$config/omarchy/shell.json" 2>/dev/null; then
+    omarchy plugin enable "$plugin_id" >/dev/null 2>&1 || true
+  fi
+fi
+
+cat <<'NEXT'
+
+Talkify is installed. The first start downloads the Speech Model (670 MB);
+the ghost in the bar fills up while it does.
+
+To hold Right Super to talk, Talkify reads the keyboard, which needs the
+input group (then log out and back in):
+
+  sudo usermod -aG input "$USER"
+
+Until then, bind a tap of the key in ~/.config/hypr/bindings.lua:
+
+  o.bind("SUPER + Super_R", "Dictation (Talkify)", "talkify tap", { release = true })
+NEXT
