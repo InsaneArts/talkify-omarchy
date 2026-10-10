@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "tornikegomareli.talkify",
+  "name": "Talkify",
+  "version": "0.1.0",
+  "author": "Tornike Gomareli",
+  "license": "MIT",
+  "description": "Dictation: hold Right Super, speak, release. The HUD, the bar indicator and the settings menu for the talkify daemon.",
+  "kinds": ["service", "bar-widget", "panel"],
+  "keepLoaded": true,
+  "entryPoints": {
+    "service": "Service.qml",
+    "barWidget": "BarWidget.qml",
+    "panel": "Hud.qml"
+  },
+  "barWidget": {
+    "displayName": "Talkify",
+    "description": "Dictation status; click for settings",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}
