@@ -4,3 +4,8 @@ Synth8Begin.wav / Synth8End.wav / Synth8Paste.wav
 ChimeBegin.wav / ChimeEnd.wav / ChimePaste.wav
   Synthesized for Talkify (damped partials, sine and harmonics).
   Original Talkify assets, under the project's MIT license.
+
+ClickBegin.wav / ClickEnd.wav / ClickPaste.wav
+  "Click 01 (Minimal UI Sounds)" by cabled_mess
+  https://freesound.org/people/cabled_mess/sounds/370962/
+  License: CC0 1.0 (public domain). End and Paste are edits of Begin.
