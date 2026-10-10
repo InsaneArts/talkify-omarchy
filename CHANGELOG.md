@@ -4,6 +4,10 @@
 
 The first release: Talkify's Direct Dictation for Omarchy.
 
+Install it in one line (`curl -fsSL https://raw.githubusercontent.com/InsaneArts/talkify-omarchy/main/install.sh | bash`),
+from the AUR (`omarchy pkg aur add talkify-omarchy`, then `talkify-setup`), or
+from source (`./install.sh`).
+
 - Hold Right Super to talk and let go to insert, or tap for a hands-free
   session. Escape cancels. Shortcuts that start with Right Super keep
   working, and the microphone opens with the key so the first word is kept.
