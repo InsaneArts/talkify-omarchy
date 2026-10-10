@@ -38,7 +38,8 @@ const Grain: React.FC = () => (
   </svg>
 );
 
-export const Film: React.FC = () => {
+/** `grain` off for stills, where there is no motion to hide it in. */
+export const Film: React.FC<{ grain?: boolean }> = ({ grain = true }) => {
   const frame = useCurrentFrame();
   return (
     <AbsoluteFill
@@ -57,7 +58,7 @@ export const Film: React.FC = () => {
       {frame >= LEAVE && frame < AT.fun + 6 && <Settings frame={frame} />}
       {frame >= AT.fun - 18 && frame < AT.end && <Fun frame={frame} />}
       {frame >= END_AT && <End frame={frame} />}
-      <Grain />
+      {grain && <Grain />}
 
       <Cue at={0} name="music.wav" />
       <Cue at={PRESS - 2} name="key.wav" volume={0.9} />
