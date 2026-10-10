@@ -21,7 +21,7 @@ const SPARK_COLOURS = [
   "#7dcfff", "#dbbc7f", "#a6e3a1", "#fab387", "#89b4fa", "#f7768e",
 ];
 
-const Spark: React.FC<{ angle: number; t: number; colour: string; size: number }> = ({ angle, t, colour, size }) => {
+export const Spark: React.FC<{ angle: number; t: number; colour: string; size: number }> = ({ angle, t, colour, size }) => {
   const distance = mix(40, 210, t);
   const s = size * (t < 0.3 ? t / 0.3 : 1 - (t - 0.3) / 0.7);
   return (
