@@ -3,7 +3,7 @@
 <h3 align="center">Fast, beautiful and private voice dictation</h3>
 
 <p align="center">
-  <img src=".github/assets/cover.jpg" width="100%" alt="Talkify for Omarchy: the ghost with sparkles above the name, and the Talkify pill on five Omarchy desktops, each in another theme" />
+  <img src=".github/assets/hero.jpg" width="100%" alt="The Talkify pill in the middle of an Omarchy desktop in Tokyo Night, saying 'Looks good in Tokyo Night.' above the line 'It follows your Omarchy theme.'" />
 </p>
 
 Hold Right Super, say what you want to write, and let go. The words land in the window you were typing in: a terminal, a browser, an editor, a chat.
