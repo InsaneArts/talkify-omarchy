@@ -9,3 +9,4 @@ license.workspace = true
 rphonetic = "4"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+toml = "1"

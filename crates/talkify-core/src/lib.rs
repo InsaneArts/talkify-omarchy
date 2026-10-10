@@ -3,6 +3,7 @@
 
 pub mod chord;
 pub mod chunk;
+pub mod config;
 pub mod level;
 pub mod live;
 pub mod protocol;
