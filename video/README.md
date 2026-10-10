@@ -8,7 +8,7 @@ npm install
 npm run studio   # scrub it in the browser
 npm run render   # out/talkify-omarchy.mp4
 npm run shots    # stills of each feature, into ../.github/assets
-npm run readme   # the README's cover and pictures, and GitHub's social preview
+npm run readme   # the README's hero and pictures, and GitHub's social preview
 ```
 
 The film runs at 100 BPM: a bar is 144 frames and scenes cut on bars
@@ -21,9 +21,6 @@ synthesised by `audio/compose.py` (numpy, scipy, soundfile) into
 the app's own. The settings pages in `public/settings/` are real screenshots
 of the plugin, taken with `plugin/settings-dev` in a different theme each. Fonts are Inter Display, Inter and
 JetBrains Mono, all under the SIL Open Font License.
-
-The Omarchy wordmark in `public/omarchy-logo.svg` is Omarchy's own, from
-[basecamp/omarchy](https://github.com/basecamp/omarchy) (MIT).
 
 Claims on screen are the ones the app backs: on-device Parakeet, 25
 languages, no cloud or account, and 0.3 s for 11 s of speech measured on the

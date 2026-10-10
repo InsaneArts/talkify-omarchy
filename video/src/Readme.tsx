@@ -8,9 +8,9 @@ import { Spark } from "./scenes/Fun";
 import { OmarchyTheme } from "./themes";
 import { theme } from "./themeline";
 
-// The README's pictures, and GitHub's social preview: the cover, then one
-// picture per feature, each in another Omarchy theme. `npm run readme`
-// renders them into .github/assets.
+// The README's feature pictures, one per feature, each in another Omarchy
+// theme. `npm run readme` renders them into .github/assets, beside the hero,
+// which is a frame of the film.
 
 loadFonts();
 
@@ -99,114 +99,6 @@ const Sparkles: React.FC<{ x: number; y: number; t: number; spread?: number }> =
     ))}
   </div>
 );
-
-const COVER_THEMES = ["gruvbox", "tokyo-night", "rose-pine", "hackerman", "ristretto"];
-const NAMES: Record<string, string> = {
-  catppuccin: "Catppuccin",
-  gruvbox: "Gruvbox",
-  "tokyo-night": "Tokyo Night",
-  "rose-pine": "Rosé Pine",
-  hackerman: "Hackerman",
-  ristretto: "Ristretto",
-};
-
-/** The cover: the name, and the HUD looking good in six themes. */
-export const Cover: React.FC = () => {
-  const tile = 0.3;
-  return (
-    <AbsoluteFill style={{ background: C.ink, overflow: "hidden" }}>
-      {["#7aa2f7", "#f5c2e7", "#d8a657", "#82fb9c"].map((colour, index) => (
-        <div
-          key={colour}
-          style={{
-            position: "absolute",
-            left: [180, 1240, 420, 1460][index],
-            top: [-200, -160, 420, 380][index],
-            width: 760,
-            height: 760,
-            borderRadius: "50%",
-            background: `radial-gradient(closest-side, ${tint(colour, 0.32)}, transparent)`,
-            filter: "blur(40px)",
-          }}
-        />
-      ))}
-
-      {COVER_THEMES.map((id, index) => {
-        const offset = index - (COVER_THEMES.length - 1) / 2;
-        const angle = offset * 5;
-        const cx = 960 + offset * 370;
-        const cy = 742 + Math.abs(offset) * Math.abs(offset) * 14;
-        const t = theme(id);
-        return (
-          <div
-            key={id}
-            style={{
-              position: "absolute",
-              left: cx - (DESKTOP_W * tile) / 2,
-              top: cy - (DESKTOP_H * tile) / 2,
-              width: DESKTOP_W * tile,
-              height: DESKTOP_H * tile,
-              transform: `rotate(${angle}deg)`,
-              borderRadius: 12,
-              overflow: "hidden",
-              boxShadow: `0 40px 90px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.12), 0 0 60px ${tint(t.accent, 0.25)}`,
-              zIndex: 10 - Math.abs(offset) * 2,
-            }}
-          >
-            <At x={0} y={0} scale={tile}>
-              <Desktop
-                frame={STILL + index * 17}
-                theme={t}
-                recording
-                bare={1}
-                hud={hud("pill", { words: words(`Looks good in ${NAMES[id]}.`, { 3: "vocabulary", 4: "vocabulary" }), scale: 2.4 })}
-                terminal={DONE}
-              />
-            </At>
-          </div>
-        );
-      })}
-
-      <div style={{ position: "absolute", left: 0, right: 0, top: 58, display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <div style={{ position: "relative", height: 138 }}>
-          <Sparkles x={60} y={56} t={0.44} spread={0.8} />
-          <div style={{ transform: "rotate(-6deg) translateY(-6px)" }}>
-            <Ghost size={124} color={C.paper} look={0.3} />
-          </div>
-        </div>
-        <div
-          style={{
-            marginTop: 8,
-            fontFamily: FONT.display,
-            fontWeight: 700,
-            fontSize: 150,
-            letterSpacing: "-0.045em",
-            lineHeight: 1,
-            color: C.paper,
-          }}
-        >
-          Talkify
-        </div>
-        <div style={{ marginTop: 26, display: "flex", alignItems: "center", gap: 18 }}>
-          <span style={{ fontFamily: FONT.display, fontWeight: 500, fontSize: 40, color: C.mist, letterSpacing: "-0.01em" }}>for</span>
-          <Img src={staticFile("omarchy-logo.svg")} style={{ height: 40, filter: "invert(1)" }} />
-        </div>
-        <div
-          style={{
-            marginTop: 22,
-            fontFamily: FONT.display,
-            fontWeight: 500,
-            fontSize: 36,
-            color: C.mist,
-            letterSpacing: "-0.015em",
-          }}
-        >
-          Fast, beautiful and private voice dictation.
-        </div>
-      </div>
-    </AbsoluteFill>
-  );
-};
 
 const PLACES: { placement: Placement; label: string; id: string; scale: number; focus: [number, number]; draft?: string }[] = [
   { placement: "pill", label: "Pill", id: "tokyo-night", scale: 0.6, focus: [800, 700], draft: "Looks good in Tokyo Night." },
