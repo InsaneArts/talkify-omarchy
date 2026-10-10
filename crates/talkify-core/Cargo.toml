@@ -1,0 +1,8 @@
+[package]
+name = "talkify-core"
+description = "The pure rules of Talkify for Omarchy: session machine, chord guard, levels, protocol, config"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
