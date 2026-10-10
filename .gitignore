@@ -1,0 +1,23 @@
+# Rust
+/target
+
+# The early Parakeet spike, kept locally only
+/spikes/
+
+# Compiled HUD shaders (plugin/shaders/build.sh)
+/plugin/shaders/*.qsb
+
+# Qt / QML caches
+*.qmlc
+*.jsc
+.qmlls.ini
+
+# The film's toolchain and renders
+/video/node_modules/
+/video/out/
+
+# Editors and OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
