@@ -1,0 +1,9 @@
+post_install() {
+  echo "==> Run talkify-setup as your user to put Talkify in the Omarchy bar and start it."
+  echo "==> To hold Right Super to talk: sudo usermod -aG input \$USER, then log out and back in."
+}
+
+post_upgrade() {
+  echo "==> Restart Talkify to run the new version: systemctl --user restart talkify"
+  echo "==> and the shell to load the new plugin: omarchy restart shell"
+}

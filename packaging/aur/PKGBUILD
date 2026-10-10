@@ -1,0 +1,48 @@
+# Maintainer: Tornike Gomareli <gomarelidevelopment at gmail dot com>
+
+pkgname=talkify-omarchy
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Fast, beautiful and private voice dictation for Omarchy, on-device with Parakeet"
+arch=('x86_64')
+url="https://github.com/InsaneArts/talkify-omarchy"
+license=('MIT')
+depends=('gcc-libs' 'glibc' 'alsa-lib' 'pipewire' 'curl' 'rsync' 'hyprland')
+makedepends=('cargo' 'qt6-shadertools')
+install=talkify-omarchy.install
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  export RUSTUP_TOOLCHAIN=stable
+  cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  export RUSTUP_TOOLCHAIN=stable
+  export CARGO_TARGET_DIR=target
+  cargo build --frozen --release -p talkify
+  plugin/shaders/build.sh
+}
+
+check() {
+  cd "$pkgname-$pkgver"
+  export RUSTUP_TOOLCHAIN=stable
+  cargo test --frozen -p talkify-core
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  install -Dm755 target/release/talkify "$pkgdir/usr/bin/talkify"
+  install -Dm755 packaging/talkify-setup "$pkgdir/usr/bin/talkify-setup"
+  install -Dm644 -t "$pkgdir/usr/share/talkify/sounds" sounds/*.wav
+  install -d "$pkgdir/usr/share/talkify/plugin"
+  cp -r --no-preserve=ownership plugin/. "$pkgdir/usr/share/talkify/plugin/"
+  rm -rf "$pkgdir/usr/share/talkify/plugin/dev" "$pkgdir/usr/share/talkify/plugin/settings-dev"
+  sed 's|%h/.local/bin/talkify|/usr/bin/talkify|' systemd/talkify.service |
+    install -Dm644 /dev/stdin "$pkgdir/usr/lib/systemd/user/talkify.service"
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  install -Dm644 sounds/LICENSE-SOUNDS.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE-SOUNDS.txt"
+}
