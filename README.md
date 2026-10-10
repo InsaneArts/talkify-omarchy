@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/InsaneArts/talkify-omarchy/raw/main/.github/assets/talkify-omarchy.mp4"><b>Download the 30-second film</b></a> (MP4, 4 MB)
+  <a href="https://github.com/InsaneArts/talkify-omarchy/raw/main/.github/assets/talkify-omarchy.mp4"><b>Download the 45-second film</b></a> (MP4, 8 MB)
 </p>
 
 Talkify is dictation for [Omarchy](https://omarchy.org). Hold Right Super, say what you want to write, let go, and the words are pasted into the window you were typing in: a terminal, a browser, an editor, a chat. Speech recognition runs on your machine with NVIDIA's Parakeet model. There is no cloud, no account, and nothing you say leaves the computer.
