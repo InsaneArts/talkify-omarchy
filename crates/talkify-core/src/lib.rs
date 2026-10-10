@@ -4,6 +4,8 @@
 pub mod chord;
 pub mod chunk;
 pub mod level;
+pub mod live;
 pub mod protocol;
 pub mod resample;
 pub mod session;
+pub mod tidy;
