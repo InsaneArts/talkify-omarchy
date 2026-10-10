@@ -1,0 +1,1 @@
+../TalkifySettings.qml
