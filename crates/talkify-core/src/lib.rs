@@ -9,3 +9,4 @@ pub mod protocol;
 pub mod resample;
 pub mod session;
 pub mod tidy;
+pub mod vocab;
