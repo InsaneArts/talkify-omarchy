@@ -29,11 +29,15 @@ pub fn play(cue: Cue, config: &SoundConfig) {
     "click" => "Click",
     _ => "Synth8",
   };
-  let file = paths::sounds_dir().join(format!("{prefix}{suffix}.wav"));
-  if !file.exists() {
-    tracing::debug!("no sound at {}", file.display());
+  let name = format!("{prefix}{suffix}.wav");
+  let Some(file) = paths::sounds_dirs()
+    .into_iter()
+    .map(|dir| dir.join(&name))
+    .find(|file| file.exists())
+  else {
+    tracing::debug!("no sound named {name}");
     return;
-  }
+  };
   let spawned = Command::new("pw-play")
     .arg(format!("--volume={:.2}", config.volume.clamp(0.0, 1.0)))
     .arg(&file)

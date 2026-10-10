@@ -53,8 +53,13 @@ pub fn models_dir() -> PathBuf {
   data_dir().join("models")
 }
 
-pub fn sounds_dir() -> PathBuf {
-  data_dir().join("sounds")
+/// Where the session sounds are: the user's own data folder first, where
+/// install.sh puts them, then the system's, where a package puts them.
+pub fn sounds_dirs() -> [PathBuf; 2] {
+  [
+    data_dir().join("sounds"),
+    PathBuf::from("/usr/share/talkify/sounds"),
+  ]
 }
 
 /// Insights' daily aggregates.
