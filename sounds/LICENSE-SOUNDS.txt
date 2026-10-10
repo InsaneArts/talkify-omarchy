@@ -1,0 +1,6 @@
+Talkify's session sounds, picked in Settings → Sounds.
+
+Synth8Begin.wav / Synth8End.wav / Synth8Paste.wav
+ChimeBegin.wav / ChimeEnd.wav / ChimePaste.wav
+  Synthesized for Talkify (damped partials, sine and harmonics).
+  Original Talkify assets, under the project's MIT license.
