@@ -3,4 +3,5 @@
 
 pub mod chord;
 pub mod level;
+pub mod resample;
 pub mod session;
