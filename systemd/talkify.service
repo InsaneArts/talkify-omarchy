@@ -1,0 +1,13 @@
+[Unit]
+Description=Talkify dictation daemon
+Documentation=https://github.com/InsaneArts/talkify-omarchy
+PartOf=graphical-session.target
+After=graphical-session.target pipewire.service
+
+[Service]
+ExecStart=%h/.local/bin/talkify daemon
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=graphical-session.target
