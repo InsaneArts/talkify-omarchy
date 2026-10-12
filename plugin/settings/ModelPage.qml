@@ -49,4 +49,28 @@ SettingsPage {
     fontSize: Style.font.bodySmall
     onClicked: page.svc.loadModel()
   }
+
+  Heading {
+    ctx: page.ctx
+    text: "DAEMON & SYSTEM LOAD"
+  }
+
+  Caption {
+    ctx: page.ctx
+    text: "While connected, the Speech Model is kept warm in RAM (~1 GB) for fast voice recognition. Disconnecting Talkify stops the daemon completely to save memory and CPU load."
+  }
+
+  Row {
+    spacing: Style.space(8)
+    Button {
+      text: page.svc && page.svc.connected ? "Disconnect (save RAM & CPU)" : "Connect daemon"
+      bordered: true
+      focusable: true
+      selected: !(page.svc && page.svc.connected)
+      foreground: !(page.svc && page.svc.connected) ? Color.accent : page.fg
+      fontFamily: page.fontFamily
+      fontSize: Style.font.bodySmall
+      onClicked: if (page.svc) page.svc.toggleConnect()
+    }
+  }
 }

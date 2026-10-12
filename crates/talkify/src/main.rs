@@ -14,6 +14,9 @@ const USAGE: &str = "\
 talkify: dictation for Omarchy
 
   talkify daemon            run the daemon (systemd starts this)
+  talkify connect           connect / start the daemon (saves RAM & CPU when disconnected)
+  talkify disconnect        disconnect / stop the daemon (frees ~1 GB RAM & CPU)
+  talkify toggle-connection toggle daemon between connected and disconnected
   talkify watch             stream events as JSON lines (the shell plugin reads this)
   talkify status            print the daemon's state once
   talkify toggle            start a latched session, or finish the one in flight
@@ -53,6 +56,9 @@ fn main() -> ExitCode {
   let args: Vec<&str> = args.iter().map(String::as_str).collect();
   let result = match args.as_slice() {
     ["daemon"] => daemon::run(),
+    ["connect"] => connect_daemon(),
+    ["disconnect"] => disconnect_daemon(),
+    ["toggle-connection" | "toggle-connect"] => toggle_connection(),
     ["watch"] => watch(None),
     ["status"] => watch(Some(daemon::GREETING_EVENTS)),
     ["toggle"] => send(Command::Toggle),
@@ -155,4 +161,85 @@ fn watch(limit: Option<usize>) -> anyhow::Result<()> {
     }
   }
   Ok(())
+}
+
+fn is_connected() -> bool {
+  let path = paths::socket();
+  UnixStream::connect(&path).is_ok()
+}
+
+fn connect_daemon() -> anyhow::Result<()> {
+  if is_connected() {
+    println!("Talkify is already connected.");
+    return Ok(());
+  }
+
+  // Try starting via systemd user service first
+  let systemd_success = std::process::Command::new("systemctl")
+    .args(["--user", "start", "talkify.service"])
+    .status()
+    .map(|s| s.success())
+    .unwrap_or(false);
+
+  // If systemd service start failed, attempt spawning daemon in background directly
+  if !systemd_success {
+    let exe = std::env::current_exe().context("get current exe")?;
+    std::process::Command::new(exe)
+      .arg("daemon")
+      .stdin(std::process::Stdio::null())
+      .stdout(std::process::Stdio::null())
+      .stderr(std::process::Stdio::null())
+      .spawn()
+      .context("spawn daemon")?;
+  }
+
+  // Wait briefly for daemon to bind socket
+  let path = paths::socket();
+  let start = std::time::Instant::now();
+  let timeout = std::time::Duration::from_secs(5);
+  while start.elapsed() < timeout {
+    if UnixStream::connect(&path).is_ok() {
+      println!("Talkify connected.");
+      return Ok(());
+    }
+    std::thread::sleep(std::time::Duration::from_millis(100));
+  }
+
+  anyhow::bail!("Talkify daemon started, but socket did not appear within 5s")
+}
+
+fn disconnect_daemon() -> anyhow::Result<()> {
+  let was_connected = is_connected();
+
+  // Try stopping systemd service
+  let _ = std::process::Command::new("systemctl")
+    .args(["--user", "stop", "talkify.service"])
+    .status();
+
+  // Also send Disconnect command over socket if still connected or not using systemd
+  if was_connected && is_connected() {
+    let _ = send(Command::Disconnect);
+  }
+
+  // Wait briefly for socket to disappear
+  let path = paths::socket();
+  let start = std::time::Instant::now();
+  let timeout = std::time::Duration::from_secs(3);
+  while start.elapsed() < timeout {
+    if !path.exists() && UnixStream::connect(&path).is_err() {
+      break;
+    }
+    std::thread::sleep(std::time::Duration::from_millis(50));
+  }
+
+  println!("Talkify disconnected (daemon stopped, RAM and CPU freed).");
+  Ok(())
+}
+
+fn toggle_connection() -> anyhow::Result<()> {
+  if is_connected() {
+    disconnect_daemon()
+  } else {
+    connect_daemon()
+  }
 }

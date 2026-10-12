@@ -93,10 +93,33 @@ Item {
     return node
   }
 
+  property bool userDisconnected: false
+  property int retryCount: 0
+  property int reconnectBackoff: 1500
+
   function run(args) {
     Quickshell.execDetached([root.binary].concat(args))
   }
   function command(json) { run(["raw", JSON.stringify(json)]) }
+  function connect() {
+    userDisconnected = false
+    run(["connect"])
+    retryCount = 0
+    reconnectBackoff = 1000
+    reconnect.restart()
+  }
+  function disconnect() {
+    userDisconnected = true
+    run(["disconnect"])
+    reconnect.stop()
+    connected = false
+    recording = false
+    phase = "hidden"
+  }
+  function toggleConnect() {
+    if (connected) disconnect()
+    else connect()
+  }
   function toggle() { run(["toggle"]) }
   function cancel() { run(["cancel"]) }
   function pause() { run(["pause"]) }
@@ -125,6 +148,9 @@ Item {
     switch (event.t) {
     case "hello":
       connected = true
+      userDisconnected = false
+      retryCount = 0
+      reconnectBackoff = 1500
       trigger = event.trigger
       config = event.config
       break
@@ -220,15 +246,27 @@ Item {
         root.connected = false
         root.recording = false
         root.phase = "hidden"
-        reconnect.restart()
+        if (!root.userDisconnected) {
+          reconnect.restart()
+        }
       }
     }
   }
 
-  // The daemon restarts under systemd; follow it back.
+  // Follow the daemon back when it runs, with backoff to avoid CPU load when inactive.
   Timer {
     id: reconnect
-    interval: 1500
-    onTriggered: if (!watcher.running) watcher.running = true
+    interval: root.reconnectBackoff
+    onTriggered: {
+      if (root.userDisconnected) return
+      if (!watcher.running) {
+        root.retryCount += 1
+        // Back off to 10s after 3 quick attempts so an inactive daemon does not burn CPU
+        if (root.retryCount > 3) {
+          root.reconnectBackoff = 10000
+        }
+        watcher.running = true
+      }
+    }
   }
 }

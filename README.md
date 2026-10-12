@@ -86,7 +86,8 @@ Each app can have its own rules: whether to tidy the text, end with a period, wr
 ## Using it
 
 - Hold Right Super to talk, let go to insert. Tap it for hands-free, tap again to finish. Escape cancels.
-- Click the ghost in the bar for settings, right-click it to start or finish a session.
+- Click the ghost in the bar for settings, right-click it to start or finish a session (or connect if disconnected), and middle-click to toggle connect/disconnect.
+- `talkify connect` starts the daemon, `talkify disconnect` stops it to save ~1 GB RAM and CPU load, and `talkify toggle-connection` switches between them.
 - `talkify paste-last` pastes your last dictation again, `talkify retry` decodes it again, and `talkify status` shows what Talkify is doing.
 
 To update, run the install again: the one-line install, `git pull && ./install.sh`, or your AUR helper for the package.
