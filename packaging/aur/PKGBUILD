@@ -8,6 +8,7 @@ arch=('x86_64')
 url="https://github.com/InsaneArts/talkify-omarchy"
 license=('MIT')
 depends=('gcc-libs' 'glibc' 'alsa-lib' 'pipewire' 'curl' 'rsync' 'hyprland')
+optdepends=('onnxruntime-cpu: support for CPUs without AVX (e.g. Pentium/Celeron)')
 makedepends=('cargo' 'qt6-shadertools')
 install=talkify-omarchy.install
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
@@ -23,6 +24,12 @@ build() {
   cd "$pkgname-$pkgver"
   export RUSTUP_TOOLCHAIN=stable
   export CARGO_TARGET_DIR=target
+  if [[ "$(uname -m)" == "x86_64" ]] && ! grep -qw avx /proc/cpuinfo 2>/dev/null; then
+    if [[ -f /usr/lib/libonnxruntime.so ]]; then
+      export ORT_LIB_LOCATION=/usr/lib
+      export ORT_PREFER_DYNAMIC_LINK=1
+    fi
+  fi
   cargo build --frozen --release -p talkify
   plugin/shaders/build.sh
 }
