@@ -67,6 +67,8 @@ pub enum Command {
     line: String,
   },
   HistoryClear,
+  /// Stop the daemon process, cleanly releasing its socket and resources.
+  Disconnect,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]

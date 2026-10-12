@@ -62,6 +62,15 @@ impl Daemon {
         self.broadcast(&event);
         Ok(())
       }
+      Command::Disconnect => {
+        tracing::info!("disconnect requested, shutting down daemon");
+        std::thread::spawn(|| {
+          std::thread::sleep(std::time::Duration::from_millis(50));
+          let _ = std::fs::remove_file(crate::paths::socket());
+          std::process::exit(0);
+        });
+        Ok(())
+      }
       Command::Watch => Ok(()),
     };
     match result {

@@ -208,7 +208,7 @@ Item {
   }
 
   readonly property string statusLine: {
-    if (!svc || !svc.connected) return "Not running · systemctl --user start talkify"
+    if (!svc || !svc.connected) return "Disconnected · saves RAM & CPU until connected"
     if (svc.engineStatus === "downloading")
       return "Downloading the Speech Model · " + Math.round(svc.engineProgress * 100) + "%"
     if (svc.engineStatus === "loading") return "Loading the Speech Model…"
@@ -278,6 +278,21 @@ Item {
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
         spacing: Style.space(6)
+
+        Button {
+          text: root.svc && root.svc.connected ? "Disconnect" : "Connect"
+          bordered: true
+          focusable: true
+          selected: !(root.svc && root.svc.connected)
+          tooltipText: root.svc && root.svc.connected
+            ? "Stop daemon to free ~1 GB RAM and save CPU"
+            : "Start daemon to enable speech dictation"
+          foreground: !(root.svc && root.svc.connected) ? Color.accent : root.fg
+          fontFamily: root.fontFamily
+          fontSize: Style.font.bodySmall
+          onClicked: if (root.svc) root.svc.toggleConnect()
+        }
+
         Button {
           text: root.svc && root.svc.recording ? "Stop dictation" : "Start dictation"
           bordered: true

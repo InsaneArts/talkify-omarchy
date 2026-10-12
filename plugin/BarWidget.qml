@@ -136,6 +136,9 @@ Panel {
     // insights`: recent, dictation, trigger, appearance, vocabulary, apps,
     // sounds, insights or model.
     function openAt(section: string): void { root.focusedInstance().openAt(section) }
+    function connect(): void { if (root.svc) root.svc.connect() }
+    function disconnect(): void { if (root.svc) root.svc.disconnect() }
+    function toggleConnect(): void { if (root.svc) root.svc.toggleConnect() }
   }
 
   Timer {
@@ -197,11 +200,17 @@ Panel {
     id: button
     anchors.fill: parent
     bar: root.bar
-    tooltipText: root.opened ? "" : (root.milestoneText !== "" ? "Talkify · " + root.milestoneText : "Talkify")
+    tooltipText: root.opened ? "" : (root.milestoneText !== "" ? "Talkify · " + root.milestoneText : (!root.connected ? "Talkify · Disconnected" : "Talkify"))
     dimmed: !root.connected
     onPressed: function(b) {
-      if (b === Qt.RightButton && root.connected) root.svc.toggle()
-      else root.toggle()
+      if (b === Qt.MiddleButton) {
+        if (root.svc) root.svc.toggleConnect()
+      } else if (b === Qt.RightButton) {
+        if (root.connected) root.svc.toggle()
+        else if (root.svc) root.svc.connect()
+      } else {
+        root.toggle()
+      }
     }
 
     iconComponent: Component {
