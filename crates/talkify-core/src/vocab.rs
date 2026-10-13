@@ -12,7 +12,7 @@
 //! of one to three words. Corrections and snippets match exactly (whole
 //! words, any case, longest first). Preferred words also match by sound
 //! (Double Metaphone) with a bounded edit distance, and only from the same
-//! first letter, so "talker" never becomes "Walker".
+//! (ASCII-folded) first letter, so "talker" never becomes "Walker".
 
 use std::ops::Range;
 
@@ -174,7 +174,7 @@ fn phonetic(word: &str) -> String {
       'ä' | 'Ä' => out.push('a'),
       'ö' | 'Ö' => out.push('o'),
       'ü' | 'Ü' => out.push('u'),
-      'ß' => out.push_str("ss"),
+      'ß' | 'ẞ' => out.push_str("ss"),
       c if c.is_ascii_alphanumeric() => out.push(c.to_ascii_lowercase()),
       _ => {}
     }
@@ -211,6 +211,9 @@ impl Sounds {
     }
     let (heard_primary, heard_alternate) = self.keys(heard);
     let (wanted_primary, wanted_alternate) = self.keys(wanted);
+    if heard_primary.is_empty() || wanted_primary.is_empty() {
+      return false;
+    }
     let same_sound = [&heard_primary, &heard_alternate]
       .iter()
       .any(|key| !key.is_empty() && (**key == wanted_primary || **key == wanted_alternate));
@@ -533,5 +536,13 @@ mod tests {
     // exactly without touching the phonetics.
     let v = vocab("中文");
     assert_eq!(v.apply("sag 中文 bitte", true).text, "sag 中文 bitte");
+  }
+
+  #[test]
+  fn empty_phonetics_never_match() {
+    // Both sides fold to nothing: no sound evidence, no fuzzy match, even
+    // when the spelling is close.
+    let v = vocab("日本日本");
+    assert_eq!(v.apply("日本日木 test", true).text, "日本日木 test");
   }
 }
