@@ -12,7 +12,7 @@
 //! of one to three words. Corrections and snippets match exactly (whole
 //! words, any case, longest first). Preferred words also match by sound
 //! (Double Metaphone) with a bounded edit distance, and only from the same
-//! first letter, so "talker" never becomes "Walker".
+//! (ASCII-folded) first letter, so "talker" never becomes "Walker".
 
 use std::ops::Range;
 
@@ -163,6 +163,30 @@ fn ratio(a: &str, b: &str) -> f32 {
   levenshtein(a, b) as f32 / longest as f32
 }
 
+/// Double Metaphone only handles ASCII and slices bytes, so any multi-byte
+/// char (German umlauts, ß, CJK, emoji) panics the daemon inside rphonetic.
+/// Fold to ASCII first: umlauts become their base letter, ß becomes ss,
+/// everything else non-ASCII is dropped.
+fn phonetic(word: &str) -> String {
+  let mut out = String::with_capacity(word.len());
+  for c in word.chars() {
+    match c {
+      'ä' | 'Ä' => out.push('a'),
+      'ö' | 'Ö' => out.push('o'),
+      'ü' | 'Ü' => out.push('u'),
+      'ß' | 'ẞ' => out.push_str("ss"),
+      c if c.is_ascii_alphanumeric() => out.push(c.to_ascii_lowercase()),
+      _ => {}
+    }
+  }
+  out
+}
+
+/// First sound-bearing letter, so "Öl" and "Ol" guard the same bucket.
+fn phonetic_first(word: &str) -> Option<char> {
+  phonetic(word).chars().next()
+}
+
 struct Sounds(DoubleMetaphone);
 
 impl Sounds {
@@ -171,18 +195,25 @@ impl Sounds {
   }
 
   fn keys(&self, word: &str) -> (String, String) {
-    let result = self.0.double_metaphone(word);
+    let folded = phonetic(word);
+    if folded.is_empty() {
+      return (String::new(), String::new());
+    }
+    let result = self.0.double_metaphone(&folded);
     (result.primary(), result.alternate())
   }
 
   /// Whether `heard` sounds and looks enough like `wanted` (both normalized
   /// and joined) to be that word misheard.
   fn resembles(&self, heard: &str, wanted: &str) -> bool {
-    if heard.chars().count() < 4 || heard.chars().next() != wanted.chars().next() {
+    if heard.chars().count() < 4 || phonetic_first(heard) != phonetic_first(wanted) {
       return false;
     }
     let (heard_primary, heard_alternate) = self.keys(heard);
     let (wanted_primary, wanted_alternate) = self.keys(wanted);
+    if heard_primary.is_empty() || wanted_primary.is_empty() {
+      return false;
+    }
     let same_sound = [&heard_primary, &heard_alternate]
       .iter()
       .any(|key| !key.is_empty() && (**key == wanted_primary || **key == wanted_alternate));
@@ -472,5 +503,46 @@ mod tests {
       Some("Zellij")
     );
     assert_eq!(Vocabulary::teach("I use Omarchy daily", "Omarchy"), None);
+  }
+
+  #[test]
+  fn phonetic_folds_umlauts_to_ascii() {
+    assert_eq!(phonetic("Größe"), "grosse");
+    assert_eq!(phonetic("Öl"), "ol");
+    assert_eq!(phonetic("Äpfel"), "apfel");
+    assert_eq!(phonetic("Grüße"), "grusse");
+    assert_eq!(phonetic("中文"), "");
+    assert_eq!(phonetic_first("Öl"), phonetic_first("Ol"));
+  }
+
+  #[test]
+  fn umlauts_never_reach_the_phonetics_raw() {
+    // Exact matches still correct the case.
+    let v = vocab("Größe");
+    assert_eq!(v.apply("die größe ändern", true).text, "die Größe ändern");
+    assert_eq!(Vocabulary::teach("die größe ändern", "Größe"), None);
+    // Fuzzy matching over multi-byte words must not panic (rphonetic
+    // slices bytes and dies on "end byte index 2 ... inside 'Ö'").
+    let v = vocab("Omarchy");
+    assert_eq!(
+      v.apply("sprich omöchi menü", true).text,
+      "sprich omöchi menü"
+    );
+    assert_eq!(
+      Vocabulary::teach("ich mag omöchi", "Omarchy").as_deref(),
+      Some("omöchi -> Omarchy")
+    );
+    // A vocabulary of only non-ASCII folds to empty keys and matches
+    // exactly without touching the phonetics.
+    let v = vocab("中文");
+    assert_eq!(v.apply("sag 中文 bitte", true).text, "sag 中文 bitte");
+  }
+
+  #[test]
+  fn empty_phonetics_never_match() {
+    // Both sides fold to nothing: no sound evidence, no fuzzy match, even
+    // when the spelling is close.
+    let v = vocab("日本日本");
+    assert_eq!(v.apply("日本日木 test", true).text, "日本日木 test");
   }
 }
